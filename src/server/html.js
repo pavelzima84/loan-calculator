@@ -12,7 +12,7 @@ export default () =>
   <html>
     <head>
       <meta charSet="utf-8" />
-      <title>STFUANDCLICK.COM</title>
+      <title>Simple loan calculator</title>
       <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap-reboot.css" rel="stylesheet" />
       <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet" />
 

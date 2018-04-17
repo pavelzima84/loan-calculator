@@ -1,17 +1,39 @@
 import axios from 'axios'
 
-export function fetchSessionsPromise(payload) {
-  return axios.get('/api/v1/user/sessionList')
+import * as Cache from './cache'
+
+export function createCancelToken() {
+  return axios.CancelToken.source()
 }
 
-export function fetchLeaderBoardPromise(payload) {
-  return axios.get(`/api/v1/team/leaderboard?session=${payload.session}`)
+export function loadConfigPromise(payload, cancelToken) {
+  return axios.get('https://js-developer-second-round.herokuapp.com/api/v1/application/constraints', { cancelToken })
 }
 
-// export function fetchTeamPromise(session, team) {
-// 	return axios.get(`/api/v1/team/${team}?session=${session}`)
+export function calculatePromise(payload, cancelToken) {
+  return axios.get(
+    `https://js-developer-second-round.herokuapp.com/api/v1/application/first-loan-offer?amount=${payload.amount}&term=${payload.term}`,
+    { cancelToken }
+  )
+}
+
+// export function cansel(source) {
+
 // }
 
-export function sendClickPromise(payload) {
-  return axios.post(`/api/v1/team/${payload.team}/click?session=${payload.session}`)
-}
+// export function calculatePromise(payload) {
+//   if (source) {
+//     source.cancel()
+//   }
+
+//   source = CancelToken.source()
+
+//   return axios.get(
+//     `https://js-developer-second-round.herokuapp.com/api/v1/application/real-first-loan-offer?amount=${payload.amount}&term=${payload.term}`,
+//     {
+//        cancelToken: source.token
+//     }
+//   )
+// }
+
+

@@ -1,15 +1,8 @@
 import React from 'react'
 import { Route } from 'react-router-3'
 
-import PageContainer from './containers/PageContainer'
-import LeaderBoardMainContainer from './containers/LeaderBoardMainContainer'
-import TeamBoardMainContainer from './containers/TeamBoardMainContainer'
-import NotFoundMain from './components/NotFoundMain'
+import Page from './components/Page'
 
 export default (
-  <Route component={PageContainer}>
-    <Route path="/" component={LeaderBoardMainContainer} />
-    <Route path="/:name" component={TeamBoardMainContainer} />
-    <Route path="*" component={NotFoundMain} />
-  </Route>
+  <Route path="/" component={Page}></Route>
 )

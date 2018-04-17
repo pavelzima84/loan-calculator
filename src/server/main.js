@@ -5,7 +5,6 @@ import compression from 'compression'
 import bodyParser from 'body-parser'
 
 import Html from './html'
-import { initApiRouters } from './api'
 
 const app = express()
 const port = process.env.PORT || 8000
@@ -16,10 +15,7 @@ app.use('/build', express.static('build'))
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-
-initApiRouters(app)
-
-// send HTML of fat client
+// send HTML
 app.get(/^\/(?!api).*/, (req, res) => {
   res.send(`<!DOCTYPE html>${ReactDOMServer.renderToStaticMarkup(<Html />)}`)
 });

@@ -1,7 +1,5 @@
-import user from './user'
-import team from './team'
-import teams from './teams'
-import sessions from './sessions'
+// import config from './config'
+import calculation from './calculation'
 
 // The reducer’s responsibility is to take the application state,
 // account for changes coming from the action creators,
@@ -10,8 +8,6 @@ import sessions from './sessions'
 // meaning it does not mutate the existing application state.
 // Instead, it outputs a brand new application state for every change that is made.
 export default {
-  user,
-  team,
-  teams,
-  sessions
+  // config,
+  calculation
 }

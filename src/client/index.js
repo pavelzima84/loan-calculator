@@ -4,8 +4,7 @@ import Main from './main'
 
 import './main.sass'
 
-const rootEl = document.getElementById('app-root');
-// const bodyEl = document.body
+const rootEl = document.getElementById('app-root')
 ReactDOM.render(<Main />, rootEl)
 
 if (module.hot) {

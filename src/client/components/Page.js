@@ -1,10 +1,7 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-3';
+import { Link } from 'react-router-3'
 
-import SessionSelectionContainer from '../containers/SessionSelectionContainer'
-
+import CalculatorContainer from '../containers/CalculatorContainer'
 
 export default class Page extends React.Component {
 
@@ -12,23 +9,13 @@ export default class Page extends React.Component {
     return (
       <div>
         <header>
-          <h1><Link to="/">stfuandclick.com</Link></h1>
-
-          <SessionSelectionContainer />
+          <h1><Link to="/">Loan Calculator</Link></h1>
         </header>
 
         <main className="container">
-          {this.props.main}
+          <CalculatorContainer />
         </main>
-
-        <footer>
-          <span>If you don't like this page, it's&nbsp;<a href="https://applifting.cz" target="_blank">Applifting</a>'s fault</span>
-        </footer>
       </div>
     )
   }
-}
-
-Page.propTypes = {
-  main: PropTypes.object.isRequired
 }
