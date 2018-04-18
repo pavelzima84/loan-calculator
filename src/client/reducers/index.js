@@ -1,4 +1,4 @@
-import config from './config'
+// import config from './config'
 import calculation from './calculation'
 
 // The reducer’s responsibility is to take the application state,
@@ -8,6 +8,6 @@ import calculation from './calculation'
 // meaning it does not mutate the existing application state.
 // Instead, it outputs a brand new application state for every change that is made.
 export default {
-  config,
+  // config,
   calculation
 }

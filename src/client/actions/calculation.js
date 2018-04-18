@@ -1,7 +1,17 @@
-import { calculatePromise } from '../utils/agent'
 import { createActions } from 'redux-actions'
-// import { push } from 'react-router-redux'
 
-export const { calculate } = createActions({
-  CALCULATE: payload => ({ data: payload, promise: calculatePromise })
+import { calculatePromise, loadConfigPromise } from '../utils/agent'
+
+export const { calculation: { set, calculate, loadConfig } } = createActions({
+  CALCULATION: {
+    SET: (payload) => payload,
+    CALCULATE: [
+      (payload) => payload,
+      (payload, meta = { promise: calculatePromise, cache: true }) => meta
+    ],
+    LOAD_CONFIG: [
+      (payload) => null,
+      (payload, meta = { promise: loadConfigPromise, cache: true }) => meta
+    ]
+  }
 })

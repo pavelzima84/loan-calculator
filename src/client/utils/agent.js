@@ -1,18 +1,25 @@
 import axios from 'axios'
 
-// let
-//   CancelToken = axios.CancelToken,
-//   source
+import * as Cache from './cache'
 
-export function loadConfigPromise(payload) {
-  return axios.get('https://js-developer-second-round.herokuapp.com/api/v1/application/constraints')
+export function createCancelToken() {
+  return axios.CancelToken.source()
 }
 
-export function calculatePromise(payload) {
+export function loadConfigPromise(payload, cancelToken) {
+  return axios.get('https://js-developer-second-round.herokuapp.com/api/v1/application/constraints', { cancelToken })
+}
+
+export function calculatePromise(payload, cancelToken) {
   return axios.get(
-    `https://js-developer-second-round.herokuapp.com/api/v1/application/first-loan-offer?amount=${payload.amount}&term=${payload.term}`
+    `https://js-developer-second-round.herokuapp.com/api/v1/application/first-loan-offer?amount=${payload.amount}&term=${payload.term}`,
+    { cancelToken }
   )
 }
+
+// export function cansel(source) {
+
+// }
 
 // export function calculatePromise(payload) {
 //   if (source) {

@@ -2,47 +2,63 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import Timeout from 'await-timeout'
 
-import { loadConfig } from '../actions/config'
-import { calculate } from '../actions/calculation'
+import { set, loadConfig, calculate } from '../actions/calculation'
 import Loading from '../components/Loading'
 import Calculator from '../components/Calculator'
 
 class CalculatorContainer extends React.Component {
 
   componentDidMount() {
+    this.changeTimeout = null
     this.props.init()
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.changeTimeout)
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.amount !== newProps.amount || this.props.term !== newProps.term) {
+      // do not delay first time
+      const delayInMilliseconds = this.props.amount ? 100 : 0
+
+      clearTimeout(this.changeTimeout)
+      this.changeTimeout = setTimeout(() => {
+        this.props.calculate(this.props.amount, this.props.term)
+      }, delayInMilliseconds)
+    }
+  }
+
   render() {
-    if (this.props.config.status !== 'done') {
+    if (!this.props.amount || !this.props.term) {
       return <Loading />
     }
 
     return <Calculator
+      amount={this.props.amount}
+      term={this.props.term}
       config={this.props.config.payload}
-      calculate={(amount, term) => this.props.calculate(amount, term)}
-      calculation={this.props.calculation}
+      result={this.props.result.payload}
+      change={(amount, term) => this.props.change(amount, term)}
     />
   }
 }
 
-const mapStateToProps = (state, props) => {
-  return {
-    config: state.config,
-    calculation: state.calculation
-  }
-}
+const mapStateToProps = (state, props) => ({
+  ...state.calculation
+})
 
 const mapDispatchToProps = (dispatch, props) => ({
   init: () => {
     dispatch(loadConfig())
-      .then((result) => {
-          dispatch(calculate({
-            amount: result.payload.amountInterval.defaultValue,
-            term: result.payload.termInterval.defaultValue
-          }))
-        })
+      .then((config) => {
+        dispatch(set({ amount: config.amountInterval.defaultValue, term: config.termInterval.defaultValue }))
+    })
+  },
+  change: (amount, term) => {
+    dispatch(set({ amount, term }))
   },
   calculate: (amount, term) => {
     dispatch(calculate({ amount, term }))

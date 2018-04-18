@@ -3,8 +3,6 @@
 This task is created by blueberry.io, see
 https://js-developer-second-round.herokuapp.com/.
 
-The devstack is based on https://github.com/tajo/devstack.git.
-
 ## Download
 
 ```shell

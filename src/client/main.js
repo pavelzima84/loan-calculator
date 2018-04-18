@@ -10,38 +10,42 @@ import { createAction, createActions } from 'redux-actions'
 import indexReducers from './reducers/index'
 import routes from './routes'
 
+import * as Cache from './utils/cache'
+
 const reducers = {
   ...indexReducers,
   routing: routerReducer
 }
 
-const callPromiseMiddlewere = ({ dispatch, getState }) => {
+const promiseMiddlewere = ({ dispatch, getState }) => {
   return next => action => {
     let {
         type,
-        payload = {}
+        payload,
+        meta = {}
       } = action,
-      types,
-      promise
+      cacheKey,
+      resultData
 
-    if (!payload.promise) {
+    if (!meta.promise) {
       // Normal action: pass it on
       return next(action)
     }
 
-    promise = payload.promise
-    payload = payload.data
-
-    if (!types && typeof type === 'string') {
+    const
+      promise = meta.promise,
+      cache = meta.cache,
       types = [`${type}_START`, `${type}_DONE`, `${type}_ERROR`]
-    }
 
-    if (
-      !Array.isArray(types) ||
-      types.length !== 3 ||
-      !types.every(type => typeof type === 'string')
-    ) {
-      throw new Error('Expected an array of three string types.')
+    if (cache) {
+      cacheKey = Cache.createKey(type, payload),
+      resultData = Cache.get(cacheKey)
+
+      if (resultData) {
+        const cacheAction = createAction(`${type}_DONE`, payload => payload)
+        next(cacheAction(resultData))
+        return Promise.resolve(resultData)
+      }
     }
 
     const [startType, doneType, errorType] = types,
@@ -52,7 +56,17 @@ const callPromiseMiddlewere = ({ dispatch, getState }) => {
     next(startAction(payload))
 
     return promise(payload).then(
-      response => next(doneAction(response.data)),
+      response => {
+        resultData = response.data
+
+        if (cache) {
+          Cache.set(cacheKey, resultData)
+        }
+
+        next(doneAction(resultData))
+
+        return resultData
+      },
       error => {
         next(errorAction(error.response.data, error.response.status))
         return Promise.reject(error.response)
@@ -61,7 +75,6 @@ const callPromiseMiddlewere = ({ dispatch, getState }) => {
   }
 }
 
-
 const composeEnhancers = composeWithDevTools({
   // Specify name here, actionsBlacklist, actionsCreators and other options if needed
 })
@@ -69,7 +82,7 @@ const customRouterMiddleware = routerMiddleware(browserHistory)
 const store = createStore(
   combineReducers(reducers),
   composeEnhancers(
-    applyMiddleware(thunk, customRouterMiddleware, callPromiseMiddlewere)
+    applyMiddleware(thunk, customRouterMiddleware, promiseMiddlewere)
   )
 )
 
