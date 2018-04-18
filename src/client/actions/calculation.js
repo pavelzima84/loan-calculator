@@ -4,14 +4,14 @@ import { calculatePromise, loadConfigPromise } from '../utils/agent'
 
 export const { calculation: { set, calculate, loadConfig } } = createActions({
   CALCULATION: {
-    SET: (payload) => payload,
+    SET: payload => payload,
     CALCULATE: [
-      (payload) => payload,
-      (payload, meta = { promise: calculatePromise, cache: true }) => meta
+      payload => payload,
+      (payload, meta = {}) => ({ promise: calculatePromise, cache: true, ...meta })
     ],
     LOAD_CONFIG: [
-      (payload) => null,
-      (payload, meta = { promise: loadConfigPromise, cache: true }) => meta
+      payload => null,
+      (payload, meta = {}) => ({ promise: loadConfigPromise, cache: true, ...meta })
     ]
   }
 })

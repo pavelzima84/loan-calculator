@@ -1,6 +1,7 @@
 import { createAction, createActions } from 'redux-actions'
 
 import * as Cache from './utils/cache'
+import { isCancel } from './utils/agent'
 
 export default ({ dispatch, getState }) => next => action => {
   let {
@@ -39,21 +40,31 @@ export default ({ dispatch, getState }) => next => action => {
 
   next(startAction(actionPayload))
 
-  return promise(actionPayload).then(
-    response => {
-      resultData = response.data
+  return promise(actionPayload, meta.cancelToken)
+    .then(
+      response => {
+        resultData = response.data
 
-      if (cache) {
-        Cache.set(cacheKey, resultData)
+        if (cache) {
+          Cache.set(cacheKey, resultData)
+        }
+
+        next(doneAction(resultData))
+
+        return resultData
+      },
+      error => {
+        let toReturn = null
+        if (isCancel(error)) {
+          // do nothing now...
+          // console.log('Request canceled', error.message)
+        } else {
+          // something is wrong...
+          next(errorAction(error.response.data, error.response.status))
+          toReturn = Promise.reject(error.response)
+        }
+
+        return toReturn
       }
-
-      next(doneAction(resultData))
-
-      return resultData
-    },
-    error => {
-      next(errorAction(error.response.data, error.response.status))
-      return Promise.reject(error.response)
-    }
-  )
+    )
 }

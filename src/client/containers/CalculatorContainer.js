@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import { set, loadConfig, calculate } from '../actions/calculation'
 import * as Cache from '../utils/cache'
+import { createCancelToken } from '../utils/agent'
 import Loading from '../components/Loading'
 import Calculator from '../components/Calculator'
 
@@ -12,14 +13,18 @@ class CalculatorContainer extends React.Component {
 
   componentDidMount() {
     this.changeTimeout = null
+    this.calculateCancelToken = null
+
     this.props.init()
   }
 
   componentWillUnmount() {
-    clearTimeout(this.changeTimeout)
+    this.clearTimeout()
+    this.clearCalculationTimeout()
   }
 
   componentWillReceiveProps(newProps) {
+    // show new data according to amount and term
     if (this.props.amount !== newProps.amount || this.props.term !== newProps.term) {
       const
         cacheKey = Cache.createKey(
@@ -28,15 +33,21 @@ class CalculatorContainer extends React.Component {
         ),
         cachedResult = Cache.get(cacheKey)
 
-      // is calculation already cached? do not wait
-      // first time do not wait
+      // is the calculation already cached? show data immediately!
+      // is the first time? try to load daty immediately!
       if (cachedResult || !this.props.amount) {
         this.props.calculate(newProps.amount, newProps.term)
       } else {
-        // wait 100 ms to calculate
-        clearTimeout(this.changeTimeout)
+        // cancel the previous try to calculate
+        this.clearCalculationTimeout()
+        // wait a moment (100 ms) to calculate
         this.changeTimeout = setTimeout(() => {
-          this.props.calculate(newProps.amount, newProps.term)
+          // cancel the previous not finished request
+          this.cancelCalculation()
+
+          // create a new cancel token
+          this.calculateCancelToken = createCancelToken()
+          this.props.calculate(newProps.amount, newProps.term, this.calculateCancelToken.token)
         }, 100)
       }
     }
@@ -54,6 +65,20 @@ class CalculatorContainer extends React.Component {
       result={this.props.result.payload}
       change={(amount, term) => this.props.change(amount, term)}
     />
+  }
+
+  clearCalculationTimeout() {
+    if (this.changeTimeout) {
+      clearTimeout(this.changeTimeout)
+      this.changeTimeout = null
+    }
+  }
+
+  cancelCalculation() {
+    if (this.calculateCancelToken) {
+      this.calculateCancelToken.cancel('Request canceled by calculator.')
+      this.calculateCancelToken = null
+    }
   }
 }
 
@@ -74,8 +99,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   change: (amount, term) => {
     dispatch(set({ amount, term }))
   },
-  calculate: (amount, term) => {
-    dispatch(calculate({ amount, term }))
+  calculate: (amount, term, cancelToken) => {
+    dispatch(calculate({ amount, term }, { cancelToken }))
   }
 })
 
