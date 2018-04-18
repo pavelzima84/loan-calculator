@@ -11,27 +11,27 @@ export default class Calculator extends React.Component {
   render() {
     return (
       <div>
-          <SliderSelectPair
-            label="Amount"
-            value={this.props.amount}
-            min={this.props.config.amountInterval.min}
-            max={this.props.config.amountInterval.max}
-            step={this.props.config.amountInterval.step}
-            onChange={(newValue) => { this.handleAmountChanged(newValue) }}
-          />
+        <SliderSelectPair
+          label="Amount"
+          value={this.props.amount}
+          min={this.props.config.amountInterval.min}
+          max={this.props.config.amountInterval.max}
+          step={this.props.config.amountInterval.step}
+          onChange={(newValue) => { this.handleAmountChanged(newValue) }}
+        />
 
-          <SliderSelectPair
-            label="Term"
-            value={this.props.term}
-            min={this.props.config.termInterval.min}
-            max={this.props.config.termInterval.max}
-            step={this.props.config.termInterval.step}
-            onChange={(newValue) => { this.handleTermChanged(newValue) }}
-          />
+        <SliderSelectPair
+          label="Term"
+          value={this.props.term}
+          min={this.props.config.termInterval.min}
+          max={this.props.config.termInterval.max}
+          step={this.props.config.termInterval.step}
+          onChange={(newValue) => { this.handleTermChanged(newValue) }}
+        />
 
-          <hr />
+        <hr />
 
-          <CalculationTable {...this.props.result} />
+        <CalculationTable {...this.props.result} />
       </div>
     )
   }

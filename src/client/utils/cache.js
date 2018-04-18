@@ -8,25 +8,26 @@ export function createKey(key, params) {
 
 export function set(key, value) {
   if (!key || !value) {
-    return null
+    throw Error('inalid key or empty value to set')
   }
 
-  if (typeof value === "object") {
-    value = JSON.stringify(value)
-  }
+  sessionStorage.setItem(
+    key,
+    typeof value === 'object' ? JSON.stringify(value) : value
+  )
 
-  sessionStorage.setItem(key, value)
+  return null
 }
 
 export function get(key) {
-  var value = sessionStorage.getItem(key)
+  let value = sessionStorage.getItem(key)
 
   if (!value) {
     return null
   }
 
   // assume it is an object that has been stringified
-  if (value[0] === "{") {
+  if (value[0] === '{') {
     value = JSON.parse(value)
   }
 

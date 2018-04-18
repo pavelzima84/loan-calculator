@@ -53,8 +53,11 @@ const mapDispatchToProps = (dispatch, props) => ({
   init: () => {
     dispatch(loadConfig())
       .then((config) => {
-        dispatch(set({ amount: config.amountInterval.defaultValue, term: config.termInterval.defaultValue }))
-    })
+        dispatch(set({
+          amount: config.amountInterval.defaultValue,
+          term: config.termInterval.defaultValue
+        }))
+      })
   },
   change: (amount, term) => {
     dispatch(set({ amount, term }))

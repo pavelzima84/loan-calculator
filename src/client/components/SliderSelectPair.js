@@ -47,6 +47,7 @@ export default class SliderSelectPair extends React.Component {
 }
 
 SliderSelectPair.propTypes = {
+  label: PropTypes.string.isRequired,
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,
   step: PropTypes.number.isRequired,

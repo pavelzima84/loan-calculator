@@ -16,14 +16,14 @@ const initialState = {
 export default handleActions({
   // async load config
   'CALCULATION/LOAD_CONFIG_START': (state, action) => ({
-    ...state, config: { status: 'start'}
+    ...state, config: { status: 'start' }
   }),
   'CALCULATION/LOAD_CONFIG_DONE': (state, action) => ({
-      ...state,
-      config: {
-        status: 'done',
-        payload: action.payload
-      }
+    ...state,
+    config: {
+      status: 'done',
+      payload: action.payload
+    }
   }),
   'CALCULATION/LOAD_CONFIG_ERROR': (state, action) => ({
     ...state, config: { status: 'error' }
