@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Simple loan calculator
 
 This task is created by blueberry.io, see
