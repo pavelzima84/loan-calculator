@@ -6,6 +6,10 @@ export function createCancelToken() {
   return axios.CancelToken.source()
 }
 
+export function getConfigCached() {
+  return Cache.get('CALCULATION/LOAD_CONFIG')
+}
+
 export function loadConfigPromise(payload, cancelToken) {
   return axios.get('https://js-developer-second-round.herokuapp.com/api/v1/application/constraints', { cancelToken })
 }

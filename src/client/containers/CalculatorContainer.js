@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { set, loadConfig, calculate } from '../actions/calculation'
+import * as Cache from '../utils/cache'
 import Loading from '../components/Loading'
 import Calculator from '../components/Calculator'
 
@@ -20,13 +21,24 @@ class CalculatorContainer extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (this.props.amount !== newProps.amount || this.props.term !== newProps.term) {
-      // do not delay first time
-      const delayInMilliseconds = this.props.amount ? 100 : 0
+      const
+        cacheKey = Cache.createKey(
+          'CALCULATION/CALCULATE',
+          { amount: newProps.amount, term: newProps.term }
+        ),
+        cachedResult = Cache.get(cacheKey)
 
-      clearTimeout(this.changeTimeout)
-      this.changeTimeout = setTimeout(() => {
-        this.props.calculate(this.props.amount, this.props.term)
-      }, delayInMilliseconds)
+      // is calculation already cached? do not wait
+      // first time do not wait
+      if (cachedResult || !this.props.amount) {
+        this.props.calculate(newProps.amount, newProps.term)
+      } else {
+        // wait 100 ms to calculate
+        clearTimeout(this.changeTimeout)
+        this.changeTimeout = setTimeout(() => {
+          this.props.calculate(newProps.amount, newProps.term)
+        }, 100)
+      }
     }
   }
 
