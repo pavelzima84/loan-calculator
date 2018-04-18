@@ -17,6 +17,7 @@ const reducers = {
   routing: routerReducer
 }
 
+<<<<<<< HEAD
 const promiseMiddlewere = ({ dispatch, getState }) => {
   return next => action => {
     let {
@@ -28,10 +29,27 @@ const promiseMiddlewere = ({ dispatch, getState }) => {
       resultData
 
     if (!meta.promise) {
+=======
+const callPromiseMiddlewere = ({ dispatch, getState }) => {
+  return next => action => {
+    let {
+        type,
+        payload = {}
+      } = action,
+      types,
+      promise,
+      cache,
+      timeout,
+      cacheKey,
+      resultData
+
+    if (!payload.promise) {
+>>>>>>> d11d39491303890c54f8ab13e2720120bbd9555d
       // Normal action: pass it on
       return next(action)
     }
 
+<<<<<<< HEAD
     const
       promise = meta.promise,
       cache = meta.cache,
@@ -46,6 +64,29 @@ const promiseMiddlewere = ({ dispatch, getState }) => {
         next(cacheAction(resultData))
         return Promise.resolve(resultData)
       }
+=======
+    // if (payload.delay) {
+      
+    // }
+
+    promise = payload.promise
+    cache = payload.cache
+    // TODO
+    // delay = payload.delay // milisecounds
+    // cancelPrev = payload.cancelPrev // true/false
+    payload = payload.data
+
+    if (!types && typeof type === 'string') {
+      types = [`${type}_START`, `${type}_DONE`, `${type}_ERROR`]
+    }
+
+    if (
+      !Array.isArray(types) ||
+      types.length !== 3 ||
+      !types.every(type => typeof type === 'string')
+    ) {
+      throw new Error('Expected an array of three string types.')
+>>>>>>> d11d39491303890c54f8ab13e2720120bbd9555d
     }
 
     const [startType, doneType, errorType] = types,
@@ -55,6 +96,18 @@ const promiseMiddlewere = ({ dispatch, getState }) => {
 
     next(startAction(payload))
 
+<<<<<<< HEAD
+=======
+    if (cache) {
+      cacheKey = Cache.createKey(type, payload)
+      resultData = Cache.get(cacheKey)
+      if (resultData) {
+        next(doneAction(resultData))
+        return Promise.resolve(resultData)
+      }
+    }
+
+>>>>>>> d11d39491303890c54f8ab13e2720120bbd9555d
     return promise(payload).then(
       response => {
         resultData = response.data
@@ -82,7 +135,11 @@ const customRouterMiddleware = routerMiddleware(browserHistory)
 const store = createStore(
   combineReducers(reducers),
   composeEnhancers(
+<<<<<<< HEAD
     applyMiddleware(thunk, customRouterMiddleware, promiseMiddlewere)
+=======
+    applyMiddleware(thunk, customRouterMiddleware, callPromiseMiddlewere)
+>>>>>>> d11d39491303890c54f8ab13e2720120bbd9555d
   )
 )
 

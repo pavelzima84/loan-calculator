@@ -1,3 +1,13 @@
+<<<<<<< HEAD
 node_modules
 package-lock.json
+=======
+.DS_Store
+.travis.yml
+node_modules
+npm-debug.log
+build
+devstack.sublime-project
+devstack.sublime-workspace
+>>>>>>> d11d39491303890c54f8ab13e2720120bbd9555d
 yarn.lock
